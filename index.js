@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || 'your-secret-key', // Replace with your session secret or ensure it's in environment variables
     resave: false,
     saveUninitialized: true
 }));
@@ -25,8 +25,6 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: 'https://db-deliveryapp-server-1.onrender.com/auth/google/callback'
 }, (accessToken, refreshToken, profile, done) => {
-    // Use the profile information to find or create a user in your database
-    // This is where you'd interact with your database
     return done(null, profile);
 }));
 
@@ -47,7 +45,6 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/' }),
     (req, res) => {
-        // Send user data back to the frontend or redirect to the app
         res.redirect('your-flutter-app-url://?token=' + req.user.token);
     }
 );
