@@ -21,7 +21,7 @@ app.use(passport.session());
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/auth/google/callback'
+    callbackURL: 'https://db-deliveryapp-server-1.onrender.com/auth/google/callback'
 }, (accessToken, refreshToken, profile, done) => {
     // Here, you would find or create a user in your database
     done(null, profile);
