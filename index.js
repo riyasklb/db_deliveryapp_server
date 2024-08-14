@@ -42,12 +42,24 @@ app.get('/auth/google',
 );
 
 // Google OAuth callback route
-app.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/' }),
-    (req, res) => {
-        res.redirect('your-flutter-app-url://?token=' + req.user.token);
+app.post('/auth/google/callback', async (req, res) => {
+    const idToken = req.body.idToken;
+
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: idToken,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        
+        // Use the payload data to authenticate or create a user in your database
+        
+        res.status(200).json({ message: 'Login successful', user: payload });
+    } catch (error) {
+        res.status(400).json({ error: 'Invalid ID token' });
     }
-);
+});
+
 
 // Start the server
 const PORT = process.env.PORT || 5000;
